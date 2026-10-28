@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Citas</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Citas">
+<meta name="theme-color" content="#08080a">
+<meta name="robots" content="noindex,nofollow">
+<link rel="manifest" href="admin.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080a;--fg:#f5f2ef;--mu:#a19c9c;--cd:#121215;--ln:rgba(255,255,255,.12);--ac:#ff2a45;--at:#ff5468;color-scheme:dark}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{font:400 16px/1.5 Barlow,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);background:var(--bg);min-height:100vh;padding:env(safe-area-inset-top) 0 calc(96px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+button,a{font:inherit;color:inherit}button{background:none;border:0;cursor:pointer;touch-action:manipulation}a{text-decoration:none}[hidden]{display:none!important}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:5;background:rgba(8,8,10,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--ln);padding-top:10px}
+.hd{display:flex;align-items:center;gap:10px;padding-bottom:10px}
+h1{font:800 1.8rem/1 "Barlow Condensed",Impact,"Arial Narrow",sans-serif;text-transform:uppercase;letter-spacing:.04em;flex:1}h1 b{color:var(--ac);font-weight:800}
+.ib{width:42px;height:42px;border-radius:50%;border:1px solid var(--ln);display:grid;place-items:center;font-size:1.15rem}
+.tabs{display:flex;gap:6px;padding-bottom:10px}.tabs button{flex:1;padding:9px 6px;border-radius:999px;border:1px solid var(--ln);font-weight:700;color:var(--mu)}.tabs button[aria-selected=true]{background:var(--fg);color:#08080a;border-color:transparent}.tabs i{font-style:normal;margin-left:6px;background:var(--ac);color:#08080a;border-radius:999px;padding:0 7px;font-size:.82rem}
+#net{background:#3a2a05;color:#ffd27a;text-align:center;font-size:.9rem;padding:6px}
+.cd{background:var(--cd);border:1px solid var(--ln);border-radius:18px;padding:16px;margin-top:12px}.cd.hl{outline:2px solid var(--ac)}
+.when{font:800 1.55rem/1.1 "Barlow Condensed",Impact,sans-serif;text-transform:uppercase;letter-spacing:.03em}.who{margin-top:4px;font-weight:600}.cd small{display:block;color:var(--mu);margin-top:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.b{display:inline-flex;align-items:center;justify-content:center;flex:1;min-width:110px;padding:12px 16px;border-radius:999px;font:800 1.05rem "Barlow Condensed",Impact,sans-serif;letter-spacing:.07em;text-transform:uppercase;background:linear-gradient(180deg,#ff3d55,#f01e3c);color:#0a0a0b;box-shadow:0 8px 24px -10px rgba(255,42,69,.8)}.b.g{background:transparent;color:var(--fg);border:1px solid rgba(255,42,69,.5);box-shadow:none}.b:active{transform:scale(.97)}
+.dh{margin:20px 0 -4px;font-weight:700;color:var(--at);text-transform:uppercase;letter-spacing:.1em;font-size:.82rem}
+.mt{color:var(--mu);text-align:center;margin-top:48px}
+.st{color:var(--ac);letter-spacing:.12em}
+#login{max-width:420px;margin:0 auto;padding:12vh 20px 0}#login h1{font-size:2.6rem;margin-bottom:6px}#login p{color:var(--mu);margin-bottom:18px}
+input,textarea{width:100%;font:inherit;font-size:16px;color:var(--fg);background:transparent;border:1px solid var(--ln);border-radius:14px;padding:13px 14px}input:focus,textarea:focus{outline:2px solid var(--ac)}
+label.ck{display:flex;gap:10px;align-items:center;margin:14px 0;color:var(--mu);font-size:.92rem}label.ck input{width:22px;height:22px;padding:0}
+#msg{margin-top:12px;color:#ffb020;min-height:1.4em}
+.menu{position:absolute;right:16px;top:60px;background:#16161a;border:1px solid var(--ln);border-radius:14px;padding:6px;min-width:210px;z-index:9}.menu a,.menu button{display:block;width:100%;text-align:left;padding:11px 12px;border-radius:10px}.menu a:active,.menu button:active{background:rgba(255,255,255,.08)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#16161a;border-top:1px solid rgba(255,42,69,.55);border-radius:22px 22px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:86vh;overflow:auto;box-shadow:0 -24px 60px rgba(0,0,0,.75)}.sheet h2{font:800 1.5rem/1.1 "Barlow Condensed",Impact,sans-serif;text-transform:uppercase;letter-spacing:.04em}.sheet textarea{margin:12px 0 4px;min-height:120px;resize:vertical}
+.lang{float:right;font-weight:700;color:var(--at);padding:2px 6px}
+.pb{border-color:rgba(255,42,69,.55)}.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#fff;color:#08080a;font-weight:700;padding:10px 16px;border-radius:999px;z-index:30;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+</style></head><body>
+<noscript><p style="padding:24px;color:#fff">Please turn on JavaScript to use this app.</p></noscript>
+<div id="boot" style="min-height:60vh;display:grid;place-items:center;color:#a19c9c;font:600 1.1rem sans-serif">Loading Citas…</div>
+<script>
+addEventListener('error',function(e){var l=document.getElementById('login'),a=document.getElementById('app'),b=document.getElementById('boot');if(!b||(l&&!l.hidden)||(a&&!a.hidden))return;b.hidden=false;b.style.cssText='padding:24px;color:#fff;font:16px sans-serif';b.textContent='';var h=document.createElement('h2');h.textContent='Something went wrong';var p=document.createElement('p');p.style.cssText='color:#ffb020;margin:10px 0 16px';p.textContent=String(e.message||'Script error').slice(0,300);var r=document.createElement('button');r.textContent='Reload';r.style.cssText='padding:12px 20px;border-radius:999px;border:0;font-weight:700';r.onclick=function(){location.reload()};b.append(h,p,r)});
+</script>
+<div id="login" hidden><h1>Barber Shop <b>Style</b></h1><p>Appointments app. Sign in once and this phone remembers you.</p>
+<input id="pw" type="password" autocomplete="current-password" placeholder="Password"><label class="ck"><input type="checkbox" id="rem" checked><span>Keep me signed in on this phone (30 days)</span></label>
+<button class="b" id="go" style="width:100%">Sign in</button><p id="msg"></p><p style="color:#555;font-size:.78rem;margin-top:28px">Citas app · v4</p></div>
+<div id="app" hidden>
+<header><div class="wrap"><div class="hd"><h1>Citas<b>.</b></h1><button class="ib" id="rf" aria-label="Refresh">⟳</button><button class="ib" id="mn" aria-label="Menu">⋯</button></div><div class="tabs" id="tabs"></div></div><div id="net" hidden>Can’t reach the server. Showing the last data.</div></header>
+<div class="menu" id="menu" hidden><a id="m1" href="./#settings">Site settings, hours &amp; agenda</a><a href="./">Open the website</a><div id="pm"></div><button id="so">Sign out</button></div>
+<main class="wrap" id="list"></main></div>
+<div class="sheet" id="sheet" hidden></div>
+<script>
+const API='https://barber-ia.ahernandezmania.workers.dev',KEY='bss-adm',SITE=new URL('./',location.href).href;
+const DEF={name:'Barber Shop Style',remShortcut:'Agregar cita',confirmMsg:'Hi {client}! Your appointment at {name} on {date} at {time} is confirmed ✓ See you then!',confirmMsgEs:'¡Hola {client}! Tu cita en {name} el {date} a las {time} está confirmada ✓ ¡Te esperamos!',rejectMsg:'Hi {client}! Sorry, {date} at {time} isn’t available at {name}. Please pick another time here: {link}',rejectMsgEs:'¡Hola {client}! Lo sentimos, el {date} a las {time} no está disponible en {name}. Elige otro horario aquí: {link}'};
+const $=s=>document.querySelector(s),LS={get:k=>{try{return localStorage.getItem(k)||''}catch(_){return''}},set:(k,v)=>{try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(_){}}};
+const pad=n=>String(n).padStart(2,'0'),tmin=x=>{const[a,b]=String(x).split(':').map(Number);return a*60+b},fmtT=m=>{const a=Math.floor(m/60)%24;return((a+11)%12+1)+':'+pad(m%60)+' '+(a<12?'AM':'PM')};
+const dOf=d=>{const[y,m,x]=d.split('-').map(Number);return new Date(y,m-1,x)},fmtD=(d,es)=>dOf(d).toLocaleDateString(es?'es-US':'en-US',{weekday:'long',month:'long',day:'numeric'}),sh=d=>dOf(d).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+const fmtPh=t=>{const d=String(t||'').replace(/\D/g,'');return d.length===11&&d[0]==='1'?`(${d.slice(1,4)}) ${d.slice(4,7)}-${d.slice(7)}`:t||''};
+const LOC=()=>{try{new Intl.DateTimeFormat(navigator.language);return navigator.language||'en-US'}catch(_){return'en-US'}};
+const iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const h=(t,a,...c)=>{const e=document.createElement(t);for(const k in a||{}){const v=a[k];if(k==='class')e.className=v;else if(k[0]==='o'&&k[1]==='n')e[k]=v;else if(v!==false&&v!=null)e.setAttribute(k,v)}c.flat().forEach(x=>{if(x!==false&&x!=null&&x!=='')e.append(x)});return e};
+let TOK=LS.get(KEY),PW='',IN=false,TAB='p',ES=false,CFG=Object.assign({},DEF),DATA={pend:[],up:[],rev:[]},HL=(()=>{const m=/^#d-(\d{4}-\d{2}-\d{2})-(\d{4})$/.exec(location.hash);return m?m[1]+'-'+m[2]:null})(),SHEET=null,TM=null;
+try{SHEET=JSON.parse(LS.get('bss-sheet')||'null')}catch(_){}
+const post=(path,data)=>fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({},PW?{password:PW}:{},TOK?{token:TOK}:{},data||{}))}).then(r=>{if(r.status===401)throw 401;if(!r.ok)throw r.status;return r.json()});
+const toast=t=>{const e=h('div',{class:'toast',role:'status'},t);document.body.append(e);setTimeout(()=>e.remove(),2600)};
+const fill=(tpl,s,es)=>String(tpl||'').replace(/\s*\{client\}/g,s.n?' '+s.n:'').replace(/\{name\}/g,CFG.name||DEF.name).replace(/\{date\}/g,fmtD(s.d,es)).replace(/\{time\}/g,fmtT(tmin(s.t))).replace(/\{link\}/g,SITE);
+const smsHref=(p,b)=>'sms:'+(p||'')+(iOS?'&':'?')+'body='+encodeURIComponent(b);
+const remHref=s=>{const[y,m,x]=s.d.split('-').map(Number),[a,b]=s.t.split(':').map(Number),w=new Date(y,m-1,x,a,b).toLocaleString(LOC(),{weekday:'long',month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});return'shortcuts://run-shortcut?name='+encodeURIComponent(CFG.remShortcut||DEF.remShortcut)+'&input=text&text='+encodeURIComponent('✂️ '+(s.n||'Client')+' — '+w)};
+const showLogin=m=>{$('#boot').hidden=true;IN=false;$('#app').hidden=true;$('#login').hidden=false;$('#msg').textContent=m||'';clearInterval(TM)};
+const enter=()=>{$('#boot').hidden=true;IN=true;$('#login').hidden=true;$('#app').hidden=false;load();refreshPush();clearInterval(TM);TM=setInterval(()=>{if(!document.hidden)load()},20000)};
+const start=async()=>{if(!TOK){showLogin();return}try{await post('/login',{});enter()}catch(e){if(e===401){TOK='';LS.set(KEY,'');showLogin('Session expired. Please sign in again.')}else{showLogin('Can’t reach the server. Check your connection and reopen the app.')}}};
+$('#go').onclick=async()=>{const pw=$('#pw').value;if(!pw)return;$('#msg').textContent='Checking…';try{const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw,remember:$('#rem').checked})});if(!r.ok)throw r.status;const j=await r.json();if(j.token){TOK=j.token;LS.set(KEY,TOK)}else PW=pw;$('#pw').value='';enter()}catch(e){$('#msg').textContent=e===401?'Wrong password.':'Couldn’t connect. Try again.'}};
+$('#pw').onkeydown=e=>{if(e.key==='Enter')$('#go').click()};
+$('#so').onclick=async()=>{try{await post('/logout',{})}catch(_){}TOK='';PW='';LS.set(KEY,'');LS.set('bss-sheet','');SHEET=null;$('#menu').hidden=true;showLogin('Signed out.')};
+$('#rf').onclick=()=>{load();toast('Refreshed')};$('#mn').onclick=()=>{$('#menu').hidden=!$('#menu').hidden};document.addEventListener('click',e=>{if(!e.target.closest('#menu,#mn'))$('#menu').hidden=true});
+const load=async()=>{try{const t=new Date();t.setHours(0,0,0,0);const from=`${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
+const[r,rv,cf]=await Promise.all([post('/admin/range',{from,days:62}),post('/admin/reviews',{}).catch(e=>{if(e===401)throw e;return{reviews:[]}}),fetch(API+'/config',{cache:'no-store'}).then(x=>x.ok?x.json():{}).catch(()=>({}))]);
+CFG=Object.assign({},DEF,cf||{});const P=[],U=[];
+Object.keys(r.days||{}).sort().forEach(d=>Object.keys(r.days[d]).sort().forEach(t=>{const v=r.days[d][t];if(!v)return;const s={d,t,n:v.n||'',p:v.p||'',at:v.at||0,exp:v.exp||0};if(v.s==='pending')P.push(s);else if(v.s==='booked'){const[y,m,x]=d.split('-').map(Number),[a,b]=t.split(':').map(Number);if(new Date(y,m-1,x,a,b).getTime()>Date.now()-36e5)U.push(s)}}));
+const more=DATA.ready&&P.length>DATA.pend.length;DATA={pend:P,up:U,rev:(rv.reviews||[]).filter(x=>!x.ok),ready:1};$('#net').hidden=true;draw();if(more)toast('New request');
+const n=P.length;document.title=(n?`(${n}) `:'')+'Citas';try{n?navigator.setAppBadge&&navigator.setAppBadge(n):navigator.clearAppBadge&&navigator.clearAppBadge()}catch(_){}
+}catch(e){if(e===401){TOK='';LS.set(KEY,'');showLogin('Session expired. Please sign in again.')}else $('#net').hidden=false}};
+const act=async(kind,s)=>{try{await post('/admin/slot',{date:s.d,time:s.t,s:kind==='ok'?'booked':null,note:''});SHEET={kind,s,es:ES};LS.set('bss-sheet',JSON.stringify(SHEET));await load()}catch(_){toast('Couldn’t save. Try again.')}};
+const free=async s=>{if(!confirm('Free up '+sh(s.d)+' at '+fmtT(tmin(s.t))+'?'))return;try{await post('/admin/slot',{date:s.d,time:s.t,s:null,note:''});await load()}catch(_){toast('Couldn’t save.')}};
+const view=s=>{SHEET={kind:'view',s,es:ES};LS.set('bss-sheet',JSON.stringify(SHEET));draw()};
+const who=s=>h('div',{class:'who'},(s.n||'(no name)')+(s.p?' · '+fmtPh(s.p):''));
+const cardP=s=>h('div',{class:'cd'+(HL===s.d+'-'+s.t.replace(':','')?' hl':''),id:'c'+s.d.replace(/-/g,'')+s.t.replace(':','')},h('div',{class:'when'},sh(s.d)+' · '+fmtT(tmin(s.t))),who(s),s.exp?h('small',{},'Held until '+new Date(s.exp).toLocaleString('en-US',{weekday:'short',hour:'numeric',minute:'2-digit'})):'',h('div',{class:'row'},h('button',{class:'b',onclick:()=>act('ok',s)},'Approve'),h('button',{class:'b g',onclick:()=>act('no',s)},'Reject')));
+const cardU=s=>h('div',{class:'cd'},h('div',{class:'when'},fmtT(tmin(s.t))),who(s),h('div',{class:'row'},h('button',{class:'b g',onclick:()=>view(s)},'Text client'),h('a',{class:'b g',href:remHref(s)},'Reminder'),h('button',{class:'b g',onclick:()=>free(s)},'Cancel')));
+const cardR=x=>h('div',{class:'cd'},h('div',{class:'when st'},'★'.repeat(x.r)+'☆'.repeat(5-x.r)),h('div',{class:'who'},x.n,x.s?' · '+x.s:''),h('p',{style:'margin-top:6px;color:var(--mu)'},x.t),h('div',{class:'row'},h('button',{class:'b',onclick:()=>rev(x,'approve')},'Approve'),h('button',{class:'b g',onclick:()=>rev(x,'delete')},'Delete')));
+const rev=async(x,op)=>{try{await post('/admin/review',{id:x.id,op});await load()}catch(_){toast('Couldn’t save.')}};
+const draw=()=>{const T=$('#tabs'),L=$('#list');T.textContent='';[['p','Pending',DATA.pend.length],['u','Upcoming',DATA.up.length],['r','Reviews',DATA.rev.length]].forEach(([k,n,c])=>T.append(h('button',{'aria-selected':TAB===k,onclick:()=>{TAB=k;draw()}},n,c&&k!=='u'?h('i',{},c):'')));
+L.textContent='';
+if(TAB==='p'){const pb=pushBanner();if(pb)L.append(pb)}
+if(TAB==='p'){if(!DATA.pend.length)L.append(h('p',{class:'mt'},'No requests waiting. New ones show up here.'));DATA.pend.forEach(s=>L.append(cardP(s)))}
+else if(TAB==='u'){if(!DATA.up.length)L.append(h('p',{class:'mt'},'No approved appointments coming up.'));let last='';DATA.up.forEach(s=>{if(s.d!==last){last=s.d;L.append(h('div',{class:'dh'},fmtD(s.d)))}L.append(cardU(s))})}
+else{if(!DATA.rev.length)L.append(h('p',{class:'mt'},'No reviews waiting.'));DATA.rev.forEach(x=>L.append(cardR(x)))}
+sheet();if(HL&&TAB==='p'){const e=$('#c'+HL.replace(/-/g,''));e&&e.scrollIntoView({block:'center'})}};
+const sheet=()=>{const S=SHEET,el=$('#sheet');if(!S||!S.s){el.hidden=true;return}const s=S.s,no=S.kind==='no',tpl=no?(S.es?CFG.rejectMsgEs:CFG.rejectMsg):(S.es?CFG.confirmMsgEs:CFG.confirmMsg);if(S.msg==null||S.msgEs!==S.es){S.msg=fill(tpl,s,S.es);S.msgEs=S.es}
+const ta=h('textarea',{rows:5}),go=h('a',{class:'b'},'Text '+(s.n||'client')),rm=h('a',{class:'b g',href:remHref(s)},'Add to Reminders');ta.value=S.msg;
+const up=()=>{S.msg=ta.value;go.href=smsHref(s.p,ta.value);LS.set('bss-sheet',JSON.stringify(S))};ta.oninput=up;go.href=smsHref(s.p,ta.value);
+el.textContent='';el.append(h('button',{class:'lang',onclick:()=>{S.es=!S.es;S.msg=null;sheet()}},S.es?'ES → EN':'EN → ES'),h('h2',{},no?'Rejected':S.kind==='view'?'Text client':'Approved ✓'),h('div',{style:'color:var(--mu)'},sh(s.d)+' · '+fmtT(tmin(s.t))+' · '+(s.n||'')+(s.p?' · '+fmtPh(s.p):'')),s.p?'':h('div',{style:'color:#ffb020;margin-top:6px'},'No phone number saved for this request: pick the chat yourself.'),ta,h('div',{class:'row'},go,no?'':rm),h('div',{class:'row'},h('button',{class:'b g',onclick:()=>navigator.clipboard&&navigator.clipboard.writeText(ta.value).then(()=>toast('Copied ✓'))},'Copy'),h('button',{class:'b g',onclick:()=>{SHEET=null;LS.set('bss-sheet','');sheet()}},'Done')));el.hidden=false};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&IN)load()});addEventListener('online',()=>IN&&load());
+/* Phone notifications (installed app) */
+const standalone=()=>navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+const u8=x=>{x=x.replace(/-/g,'+').replace(/_/g,'/');x+='='.repeat((4-x.length%4)%4);return Uint8Array.from(atob(x),c=>c.charCodeAt(0))};
+let PS='';
+const pushState=async()=>{if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return iOS&&!standalone()?'install':'unsupported';if(Notification.permission==='denied')return'blocked';try{const reg=await navigator.serviceWorker.getRegistration();const sub=reg&&await reg.pushManager.getSubscription();return sub&&Notification.permission==='granted'?'on':'off'}catch(_){return'off'}};
+const refreshPush=async()=>{PS=await pushState();const pm=$('#pm');if(pm){pm.textContent='';if(PS==='on')pm.append(h('button',{onclick:pushTest},'Send test notification'),h('button',{onclick:pushOff},'Turn off notifications'))}if(IN)draw()};
+const pushOn=async()=>{try{const reg=await navigator.serviceWorker.register('sw.js');await navigator.serviceWorker.ready;const p=await Notification.requestPermission();if(p!=='granted'){toast('Allow notifications to turn them on.');return refreshPush()}
+const key=(await post('/admin/push-key',{})).key;let sub=await reg.pushManager.getSubscription();if(sub&&LS.get('bss-vk')!==key){await sub.unsubscribe();sub=null}
+if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(key)});LS.set('bss-vk',key);await post('/admin/push-sub',{sub:sub.toJSON()});toast('Notifications on ✓');setTimeout(pushTest,600)}catch(e){toast('Couldn’t turn on notifications.')}refreshPush()};
+const pushTest=async()=>{try{const r=await post('/admin/push-test',{});toast(r.ok?'Sent ✓ Look at your lock screen':'Not sent: '+((r.errors||[])[0]||'unknown error'))}catch(_){toast('Couldn’t reach the server.')}};
+const pushOff=async()=>{try{const reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription();if(sub){await post('/admin/push-off',{endpoint:sub.endpoint}).catch(()=>{});await sub.unsubscribe()}toast('Notifications off')}catch(_){}$('#menu').hidden=true;refreshPush()};
+const pushBanner=()=>{if(!PS||PS==='on'||PS==='unsupported')return null;const t={install:'Get a notification for every new request: tap Share (the square with an arrow) → Add to Home Screen, then open “Citas” from your Home Screen and turn on notifications.',off:'Get a notification on your iPhone for every new request, like any other app.',blocked:'Notifications are blocked. Turn them on in iPhone Settings → Notifications → Citas.'}[PS];return h('div',{class:'cd pb'},h('div',{class:'who'},'🔔 Notifications'),h('small',{style:'margin:4px 0 0'},t),PS==='off'?h('div',{class:'row'},h('button',{class:'b',onclick:pushOn},'Turn on notifications')):'')};
+start();
+</script></body></html>
