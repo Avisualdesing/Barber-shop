@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-lXIOh3u+XuC99iOdooN8FswhonX15RSMhSP+5UqxUbs=' 'sha256-ci3r6vpKBSzHAEGtqGC1JdMWYYMOTCbmHMhtPYga+Dw='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://barber-ia.ahernandezmania.workers.dev; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Citas</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -9,6 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Citas">
 <meta name="theme-color" content="#08080a">
 <meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
 <link rel="manifest" href="admin.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
@@ -45,10 +47,11 @@ label.ck{display:flex;gap:10px;align-items:center;margin:14px 0;color:var(--mu);
 <noscript><p style="padding:24px;color:#fff">Please turn on JavaScript to use this app.</p></noscript>
 <div id="boot" style="min-height:60vh;display:grid;place-items:center;color:#a19c9c;font:600 1.1rem sans-serif">Loading Citas…</div>
 <script>
+if(top!==self){top.location=self.location}
 addEventListener('error',function(e){var l=document.getElementById('login'),a=document.getElementById('app'),b=document.getElementById('boot');if(!b||(l&&!l.hidden)||(a&&!a.hidden))return;b.hidden=false;b.style.cssText='padding:24px;color:#fff;font:16px sans-serif';b.textContent='';var h=document.createElement('h2');h.textContent='Something went wrong';var p=document.createElement('p');p.style.cssText='color:#ffb020;margin:10px 0 16px';p.textContent=String(e.message||'Script error').slice(0,300);var r=document.createElement('button');r.textContent='Reload';r.style.cssText='padding:12px 20px;border-radius:999px;border:0;font-weight:700';r.onclick=function(){location.reload()};b.append(h,p,r)});
 </script>
 <div id="login" hidden><h1>Barber Shop <b>Style</b></h1><p>Appointments app. Sign in once and this phone remembers you.</p>
-<input id="pw" type="password" autocomplete="current-password" placeholder="Password"><label class="ck"><input type="checkbox" id="rem" checked><span>Keep me signed in on this phone (30 days)</span></label>
+<input id="pw" type="password" autocomplete="current-password" placeholder="Password"><input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code from your authenticator" hidden style="margin-top:10px"><label class="ck"><input type="checkbox" id="rem" checked><span>Keep me signed in on this phone (14 days)</span></label>
 <button class="b" id="go" style="width:100%">Sign in</button><p id="msg"></p><p style="color:#555;font-size:.78rem;margin-top:28px">Citas app · v4</p></div>
 <div id="app" hidden>
 <header><div class="wrap"><div class="hd"><h1>Citas<b>.</b></h1><button class="ib" id="rf" aria-label="Refresh">⟳</button><button class="ib" id="mn" aria-label="Menu">⋯</button></div><div class="tabs" id="tabs"></div></div><div id="net" hidden>Can’t reach the server. Showing the last data.</div></header>
@@ -67,6 +70,7 @@ const iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='Mac
 const h=(t,a,...c)=>{const e=document.createElement(t);for(const k in a||{}){const v=a[k];if(k==='class')e.className=v;else if(k[0]==='o'&&k[1]==='n')e[k]=v;else if(v!==false&&v!=null)e.setAttribute(k,v)}c.flat().forEach(x=>{if(x!==false&&x!=null&&x!=='')e.append(x)});return e};
 let TOK=LS.get(KEY),PW='',IN=false,TAB='p',ES=false,CFG=Object.assign({},DEF),DATA={pend:[],up:[],rev:[]},HL=(()=>{const m=/^#d-(\d{4}-\d{2}-\d{2})-(\d{4})$/.exec(location.hash);return m?m[1]+'-'+m[2]:null})(),SHEET=null,TM=null;
 try{SHEET=JSON.parse(LS.get('bss-sheet')||'null')}catch(_){}
+if(SHEET&&Date.now()-(SHEET.at||0)>18e5){SHEET=null;LS.set('bss-sheet','')}
 const post=(path,data)=>fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({},PW?{password:PW}:{},TOK?{token:TOK}:{},data||{}))}).then(r=>{if(r.status===401)throw 401;if(!r.ok)throw r.status;return r.json()});
 const toast=t=>{const e=h('div',{class:'toast',role:'status'},t);document.body.append(e);setTimeout(()=>e.remove(),2600)};
 const fill=(tpl,s,es)=>String(tpl||'').replace(/\s*\{client\}/g,s.n?' '+s.n:'').replace(/\{name\}/g,CFG.name||DEF.name).replace(/\{date\}/g,fmtD(s.d,es)).replace(/\{time\}/g,fmtT(tmin(s.t))).replace(/\{link\}/g,SITE);
@@ -75,8 +79,8 @@ const remHref=s=>{const[y,m,x]=s.d.split('-').map(Number),[a,b]=s.t.split(':').m
 const showLogin=m=>{$('#boot').hidden=true;IN=false;$('#app').hidden=true;$('#login').hidden=false;$('#msg').textContent=m||'';clearInterval(TM)};
 const enter=()=>{$('#boot').hidden=true;IN=true;$('#login').hidden=true;$('#app').hidden=false;load();refreshPush();clearInterval(TM);TM=setInterval(()=>{if(!document.hidden)load()},20000)};
 const start=async()=>{if(!TOK){showLogin();return}try{await post('/login',{});enter()}catch(e){if(e===401){TOK='';LS.set(KEY,'');showLogin('Session expired. Please sign in again.')}else{showLogin('Can’t reach the server. Check your connection and reopen the app.')}}};
-$('#go').onclick=async()=>{const pw=$('#pw').value;if(!pw)return;$('#msg').textContent='Checking…';try{const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw,remember:$('#rem').checked})});if(!r.ok)throw r.status;const j=await r.json();if(j.token){TOK=j.token;LS.set(KEY,TOK)}else PW=pw;$('#pw').value='';enter()}catch(e){$('#msg').textContent=e===401?'Wrong password.':'Couldn’t connect. Try again.'}};
-$('#pw').onkeydown=e=>{if(e.key==='Enter')$('#go').click()};
+$('#go').onclick=async()=>{const pw=$('#pw').value;if(!pw)return;$('#msg').textContent='Checking…';try{const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw,remember:$('#rem').checked,code:($('#otp').value||'').trim()})});if(r.status===401){const e=await r.json().catch(()=>({}));if(e.error==='code'){$('#otp').hidden=false;$('#otp').focus();$('#msg').textContent='Enter the 6-digit code from your authenticator app.';return}throw 401}if(r.status===429)throw 429;if(!r.ok)throw r.status;const j=await r.json();if(j.token){TOK=j.token;PW='';if($('#rem').checked)LS.set(KEY,TOK)}else PW=pw;$('#pw').value='';$('#otp').value='';enter()}catch(e){$('#msg').textContent=e===401?'Wrong password or code.':e===429?'Too many attempts. Try again in 15 minutes.':'Couldn’t connect. Try again.'}};
+$('#pw').onkeydown=$('#otp').onkeydown=e=>{if(e.key==='Enter')$('#go').click()};
 $('#so').onclick=async()=>{try{await post('/logout',{})}catch(_){}TOK='';PW='';LS.set(KEY,'');LS.set('bss-sheet','');SHEET=null;$('#menu').hidden=true;showLogin('Signed out.')};
 $('#rf').onclick=()=>{load();toast('Refreshed')};$('#mn').onclick=()=>{$('#menu').hidden=!$('#menu').hidden};document.addEventListener('click',e=>{if(!e.target.closest('#menu,#mn'))$('#menu').hidden=true});
 const load=async()=>{try{const t=new Date();t.setHours(0,0,0,0);const from=`${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
@@ -86,9 +90,9 @@ Object.keys(r.days||{}).sort().forEach(d=>Object.keys(r.days[d]).sort().forEach(
 const more=DATA.ready&&P.length>DATA.pend.length;DATA={pend:P,up:U,rev:(rv.reviews||[]).filter(x=>!x.ok),ready:1};$('#net').hidden=true;draw();if(more)toast('New request');
 const n=P.length;document.title=(n?`(${n}) `:'')+'Citas';try{n?navigator.setAppBadge&&navigator.setAppBadge(n):navigator.clearAppBadge&&navigator.clearAppBadge()}catch(_){}
 }catch(e){if(e===401){TOK='';LS.set(KEY,'');showLogin('Session expired. Please sign in again.')}else $('#net').hidden=false}};
-const act=async(kind,s)=>{try{await post('/admin/slot',{date:s.d,time:s.t,s:kind==='ok'?'booked':null,note:''});SHEET={kind,s,es:ES};LS.set('bss-sheet',JSON.stringify(SHEET));await load()}catch(_){toast('Couldn’t save. Try again.')}};
+const act=async(kind,s)=>{try{await post('/admin/slot',{date:s.d,time:s.t,s:kind==='ok'?'booked':null,note:''});SHEET={kind,s,es:ES,at:Date.now()};LS.set('bss-sheet',JSON.stringify(SHEET));await load()}catch(_){toast('Couldn’t save. Try again.')}};
 const free=async s=>{if(!confirm('Free up '+sh(s.d)+' at '+fmtT(tmin(s.t))+'?'))return;try{await post('/admin/slot',{date:s.d,time:s.t,s:null,note:''});await load()}catch(_){toast('Couldn’t save.')}};
-const view=s=>{SHEET={kind:'view',s,es:ES};LS.set('bss-sheet',JSON.stringify(SHEET));draw()};
+const view=s=>{SHEET={kind:'view',s,es:ES,at:Date.now()};LS.set('bss-sheet',JSON.stringify(SHEET));draw()};
 const who=s=>h('div',{class:'who'},(s.n||'(no name)')+(s.p?' · '+fmtPh(s.p):''));
 const cardP=s=>h('div',{class:'cd'+(HL===s.d+'-'+s.t.replace(':','')?' hl':''),id:'c'+s.d.replace(/-/g,'')+s.t.replace(':','')},h('div',{class:'when'},sh(s.d)+' · '+fmtT(tmin(s.t))),who(s),s.exp?h('small',{},'Held until '+new Date(s.exp).toLocaleString('en-US',{weekday:'short',hour:'numeric',minute:'2-digit'})):'',h('div',{class:'row'},h('button',{class:'b',onclick:()=>act('ok',s)},'Approve'),h('button',{class:'b g',onclick:()=>act('no',s)},'Reject')));
 const cardU=s=>h('div',{class:'cd'},h('div',{class:'when'},fmtT(tmin(s.t))),who(s),h('div',{class:'row'},h('button',{class:'b g',onclick:()=>view(s)},'Text client'),h('a',{class:'b g',href:remHref(s)},'Reminder'),h('button',{class:'b g',onclick:()=>free(s)},'Cancel')));
